@@ -17,11 +17,13 @@ create.handle(function (req, res) {
     }
     var options = {
         url: facesURL('students'),
+        method: 'POST',
         headers: {
             "Content-Type": "application/json",
             "Ocp-Apim-Subscription-Key": "e16d3ed01c1243099ed866638c17d79d"
         },
-        form: {
+        json: true,
+        body: {
             name: name
         }
     };
@@ -30,7 +32,7 @@ create.handle(function (req, res) {
             var user = {
                 number: number,
                 name: name,
-                facesID: JSON.parse(body).personId
+                oxfordID: body.personId
             };
             DB.insert('users', user, function() {
                 res.respondJSON(user);
