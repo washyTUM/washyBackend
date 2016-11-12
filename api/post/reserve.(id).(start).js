@@ -17,7 +17,9 @@ var reserve = new Method();
 
 reserve.handle(function (req, res) {
     var id = req.getParameter('id');
+    console.log(req.getParameter('start'));
     var start = new Date(req.getParameter('start'));
+    console.log(start);
     if (!id || !start) {
         res.responsdPlainText("Get yo shit in order. Missing parameters", 400);
         return;
@@ -29,9 +31,11 @@ reserve.handle(function (req, res) {
         end: end,
         person: id,
     };
-    DB.find('machines', { }, function(machines) {
+    DB.findAll('machines', { }, function(machines) {
+        console.log(machines);
         var available = machines.map(function(machine) {
             machine.slots = machine.slots.filter(function(slot) {
+                console.log(slot);
                 return doOverlap(slot, newSlot);
             });
             return machine;
@@ -39,6 +43,7 @@ reserve.handle(function (req, res) {
             return machine.slots.length < 1;
         });
         if (available.length > 0) {
+            console.log("Will edit");
             DB.edit('machines', { _id: available[0]._id }, function(m) {
                 m.slots.push(newSlot);
                 return m;
@@ -48,7 +53,7 @@ reserve.handle(function (req, res) {
                 res.respondJSON(false, 501);
             });
         } else {
-            res.responsdJSON(false, 404);
+            res.respondJSON(false, 404);
         }
     });
 });

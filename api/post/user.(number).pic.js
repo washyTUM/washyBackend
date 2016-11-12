@@ -18,7 +18,9 @@ add.handle(function (req, res) {
         return;
     }
     DB.find('users', { number: number }, function(user) {
+        console.log(user);
         var id = user.oxfordID;
+        console.log(id);
         var options = {
             url: facesURL('students', id),
             headers: {
@@ -37,6 +39,9 @@ add.handle(function (req, res) {
                 res.respondPlainText(err.toString(), 501);
             }
         });
+    }, function(err) {
+        console.log(err);
+        res.respondPlainText(err, 501);
     });
 });
 
