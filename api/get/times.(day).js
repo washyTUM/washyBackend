@@ -83,6 +83,7 @@ find.handle(function (req, res) {
     var today = day.toDateString();
     var tomorrow = new Date(day.getTime() + (24 * 60 * 60 * 1000));
     DB.findAll('machines', {}, function (machines) {
+        console.log(machines);
         var allSlots = slotsFromMachines(machines);
         var occupiedOnDay = allSlots.map(function (slots) {
             return slots.filter(function (slot) {

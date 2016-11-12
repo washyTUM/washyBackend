@@ -4,12 +4,12 @@ var request = require('request');
 
 var identify = new Method();
 
-var facesDecectURL = "https://api.projectoxford.ai/face/v1.0/detect";
+var facesDetectURL = "https://api.projectoxford.ai/face/v1.0/detect";
 var facesIdentifyURL = "https://api.projectoxford.ai/face/v1.0/identify";
 
 function detect(url, callback) {
     var options = {
-        url: facesDecectURL,
+        url: facesDetectURL,
         headers: {
             "Content-Type": "application/json",
             "Ocp-Apim-Subscription-Key": "e16d3ed01c1243099ed866638c17d79d"
@@ -19,10 +19,13 @@ function detect(url, callback) {
             url: url
         }
     };
+    console.log(options);
     request(options, function(err, httpRES, body) {
         if (!err || err === null) {
+            console.log(body);
             callback(body.faceId);
         } else {
+            console.log(err);
             callback(null);
         }
     });
@@ -70,22 +73,27 @@ function getMachine(machines, candidates) {
 identify.handle(function (req, res) {
     var roomID = req.getParameter('id');
     var url = req.getParameter('url');
-    if (!machineID || !url) {
+    if (!roomID || !url) {
         res.responsdPlainText("Get yo shit in order. Missing parameters", 400);
         return;
     }
-    DB.findAll('wash', { room: roomID }, function(machines) {
+    DB.findAll('machines', { room: roomID }, function(machines) {
         var now = (new Date()).getTime();
+        console.log(machines);
         machines = machines.map(function(machine) {
             machine.slots = machine.slots.filter(function(x) {
                 // TODO: Add some more criteria regarding time left in slot
                 return (new Date(x.start)).getTime() <= now && (new Date(x.end)).getTime() >= now;
             });
+            console.log(machine.slots);
             return machine;
         }).filter(function(x) { return x.slots.length > 0; });
         if (machines.length > 0) {
+            console.log(machines);
             detect(function(face) {
+                console.log(face);
                 identify(face, 'students', function(candidates) {
+                    console.log(candidates);
                     var machine = getMachine(machines, candidates);
                     if (machine) {
                         res.respondJSON(true);
