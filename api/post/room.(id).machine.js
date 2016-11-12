@@ -6,7 +6,8 @@ var reserve = new Method();
 reserve.DBWrapper.insert('machines', function(req) {
     return {
         room: req.getParameter('id') || 1,
-        slots: []
+        slots: [],
+        created_on: Date.now().toString()
     };
 });
 
