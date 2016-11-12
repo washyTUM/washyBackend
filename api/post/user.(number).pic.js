@@ -11,8 +11,10 @@ function facesURL(groupID, personId) {
 add.handle(function (req, res) {
     var number = req.getParameter('number');
     var url = req.getParameter('url');
+    console.log(number);
+    console.log(url);
     if (!number || !url) {
-        res.responsdPlainText("Get yo shit in order. Missing parameters", 400);
+        res.respondPlainText("Get yo shit in order. Missing parameters", 400);
         return;
     }
     DB.find('users', { number: number }, function(user) {
