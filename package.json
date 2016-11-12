@@ -1,0 +1,23 @@
+{
+  "name": "washy",
+  "version": "0.0.1",
+  "description": "Backend for washy project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/greece57/washyBackend.git"
+  },
+  "author": "mathiasquintero",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/greece57/washyBackend/issues"
+  },
+  "homepage": "https://github.com/greece57/washyBackend#readme",
+  "dependencies": {
+    "aeolus": "^1.1.29"
+  }
+}
