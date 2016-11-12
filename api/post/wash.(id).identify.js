@@ -55,31 +55,47 @@ function identify(face, groupID, callback) {
     });
 }
 
+function getMachine(machines, candidates) {
+    for (var i = 0; i < machines.length; i++) {
+        var slot = machines[i].slots[0];
+        var withSameID = candidates.filter(function(x) {
+            return x.personId === slot.person;
+        });
+        if (withSameID.length > 0) {
+            return machines[i];
+        }
+    }
+}
+
 identify.handle(function (req, res) {
-    var machineID = req.getParameter('id');
+    var roomID = req.getParameter('id');
     var url = req.getParameter('url');
     if (!machineID || !url) {
         res.responsdPlainText("Get yo shit in order. Missing parameters", 400);
         return;
     }
-    DB.find('wash', { _id: machineID }, function(machine) {
+    DB.findAll('wash', { room: roomID }, function(machines) {
         var now = (new Date()).getTime();
-        var slots = machine.slots.filter(function(x) {
-            // TODO: Add some more criteria regarding time left in slot
-            return (new Date(x.start)).getTime() <= now && (new Date(x.end)).getTime() >= now;
-        });
-        if (slots.length > 0) {
-            var id = slots[0].user.oxfordID;
+        machines = machines.map(function(machine) {
+            machine.slots = machine.slots.filter(function(x) {
+                // TODO: Add some more criteria regarding time left in slot
+                return (new Date(x.start)).getTime() <= now && (new Date(x.end)).getTime() >= now;
+            });
+            return machine;
+        }).filter(function(x) { return x.slots.length > 0; });
+        if (machines.length > 0) {
             detect(function(face) {
                 identify(face, 'students', function(candidates) {
-                    var withSameID = candidates.filter(function(x) { return x.personId == id; });
-                    if (withSameID.length > 0) {
+                    var machine = getMachine(machines, candidates);
+                    if (machine) {
                         res.respondJSON(true);
                         // TODO: Send message through IoT
                     } else {
                         res.respondJSON(false);
                     }
                 });
+            }, function() {
+                res.respondJSON(false);
             });
         } else {
             res.respondJSON(false);

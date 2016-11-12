@@ -32,7 +32,8 @@ create.handle(function (req, res) {
             var user = {
                 number: number,
                 name: name,
-                oxfordID: body.personId
+                balance: 10.0,
+                oxfordID: body.personId,
             };
             DB.insert('users', user, function() {
                 res.respondJSON(user);
