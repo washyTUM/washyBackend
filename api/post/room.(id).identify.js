@@ -79,16 +79,39 @@ identify.handle(function (req, res) {
     }
     DB.findAll('machines', { room: roomID }, function(machines) {
         var now = (new Date()).getTime();
+        console.log(new Date());
+        console.log(now);
         console.log(machines);
         machines = machines.map(function(machine) {
             machine.slots = machine.slots.filter(function(x) {
                 // TODO: Add some more criteria regarding time left in slot
-                return (new Date(x.start)).getTime() <= now && (new Date(x.end)).getTime() >= now;
+                // console.log(x);
+                // console.log(new Date(x.start));
+                // console.log(new Date(x.end));
+
+
+                var startDate = new Date(x.start);
+                var endDate = new Date(x.end);
+
+                console.log(startDate);
+                console.log(endDate);
+
+                var startTimeStamp = startDate.getTime();
+                var endTimeStamp = endDate.getTime();
+
+                var didStart = startTimeStamp <= now;
+                var notEnded = endTimeStamp >= now;
+
+                console.log(didStart);
+                console.log(notEnded);
+
+                return (didStart && notEnded);
             });
-            console.log(machine.slots);
+            console.log(machine);
             return machine;
         }).filter(function(x) { return x.slots.length > 0; });
         if (machines.length > 0) {
+            console.log("Machines are reserved");
             console.log(machines);
             detect(function(face) {
                 console.log(face);

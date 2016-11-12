@@ -17,8 +17,7 @@ var reserve = new Method();
 
 reserve.handle(function (req, res) {
     var id = req.getParameter('id');
-    console.log(req.getParameter('start'));
-    var start = new Date(req.getParameter('start'));
+    var start = new Date(req.getParameter('start') + " GMT+0100");
     console.log(start);
     if (!id || !start) {
         res.responsdPlainText("Get yo shit in order. Missing parameters", 400);
@@ -48,7 +47,7 @@ reserve.handle(function (req, res) {
                 m.slots.push(newSlot);
                 return m;
             }, function() {
-                res.respondJSON(true);
+                res.respondJSON(available[0]);
             }, function() {
                 res.respondJSON(false, 501);
             });
