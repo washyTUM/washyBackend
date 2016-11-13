@@ -114,6 +114,7 @@ identify.handle(function (req, res) {
                     console.log(machine);
                     if (machine) {
                         DB.find('users', { oxfordID: machine.person }, function(user) {
+                            console.log(user);
                             res.respondPlainText(user.name);
                         }, function() {
                             res.respondPlainText('user-not-available');
