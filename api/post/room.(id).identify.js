@@ -113,7 +113,7 @@ identify.handle(function (req, res) {
                     var machine = getMachine(machines, candidates);
                     console.log(machine);
                     if (machine) {
-                        DB.find('users', { oxfordID: machine.person }, function(user) {
+                        DB.find('users', { oxfordID: machine.slots[0].person }, function(user) {
                             console.log(user);
                             res.respondPlainText(user.name);
                         }, function() {
