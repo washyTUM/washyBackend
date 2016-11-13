@@ -124,7 +124,7 @@ identify.handle(function (req, res) {
             detect(url, function(face) {
                 console.log(face);
                 if (face === null) {
-                    res.respondPlainText("Internal Error", 500);
+                    res.respondJSON(false);
                     return;
                 }
                 identifyAPI(face, 'students', function(candidates) {
