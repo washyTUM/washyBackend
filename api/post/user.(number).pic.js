@@ -8,6 +8,22 @@ function facesURL(groupID, personId) {
     return "https://api.projectoxford.ai/face/v1.0/persongroups/" + groupID + "/persons/" + personId + "/persistedFaces";
 }
 
+function facesTrainURL(gropudID) {
+    return "https://api.projectoxford.ai/face/v1.0/persongroups/" + gropudID + "/train";
+}
+
+function doTrain() {
+    var options = {
+        url: facesTrainURL('students'),
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "Ocp-Apim-Subscription-Key": "e16d3ed01c1243099ed866638c17d79d"
+        }
+    };
+    request(options, function(err, httpRES, body) {});
+}
+
 add.handle(function (req, res) {
     var number = req.getParameter('number');
     var url = req.getParameter('url');
@@ -33,6 +49,7 @@ add.handle(function (req, res) {
         request(options, function(err, httpRES, body) {
             if (!err || err === null) {
                 console.log(body);
+                doTrain();
                 res.respondPlainText("Succesfully added pic. Nice...");
             } else {
                 res.respondPlainText(err.toString(), 501);
