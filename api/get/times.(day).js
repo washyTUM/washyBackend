@@ -24,6 +24,7 @@ function overLapped(first, second) {
         } else {
             result.end = second.end;
         }
+        return result;
     } else {
         return null;
     }
@@ -33,14 +34,20 @@ function overLappingSlots(first, second) {
     var result = [];
     for (var i = 0; i < first.length; i++) {
         for (var j = 0; j < second.length; j++) {
-            result.push(overLapped(first[i], second[j]));
+            var over = overLapped(first[i], second[j]);
+            result.push(over);
         }
     }
     return result.filter(function (i) { return i !== null; });
 }
 
 function getOverlappedSlots(slots) {
-    return slots.reduce(overLappingSlots, []);
+    if (slots.length > 0) {
+        var overLapped = slots.reduce(overLappingSlots, slots[0]);
+        return overLapped;
+    } else {
+        return [];
+    }
 }
 
 function getAvailable(notAvailable, startDate, endDate) {
@@ -57,7 +64,6 @@ function getAvailable(notAvailable, startDate, endDate) {
     available = available.filter(function (a) {
         return a.end && a.start.getTime() < a.end.getTime();
     });
-    console.log(available);
     return available;
 }
 
@@ -77,10 +83,11 @@ find.handle(function (req, res) {
     var today = day.toDateString();
     var tomorrow = new Date(day.getTime() + (24 * 60 * 60 * 1000));
     DB.findAll('machines', {}, function (machines) {
+        console.log(machines);
         var allSlots = slotsFromMachines(machines);
         var occupiedOnDay = allSlots.map(function (slots) {
             return slots.filter(function (slot) {
-                return slot.start.getDay() == today || slot.end.getDay() == today;
+                return slot.start.toDateString() == today || slot.end.toDateString() == today;
             });
         });
         var available = getAvailable(getOverlappedSlots(occupiedOnDay), new Date(today), new Date(tomorrow.toDateString()));

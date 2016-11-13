@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/greece57/washyBackend#readme",
   "dependencies": {
-    "aeolus": "^1.1.30",
+    "aeolus": "^1.1.32",
     "request": "^2.78.0"
   }
 }
