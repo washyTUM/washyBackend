@@ -1,4 +1,5 @@
 var Method = require('aeolus').Method;
+var schedule = require('node-schedule');
 var DB = require('aeolus').DB;
 
 function isOnDay(slot, day) {
@@ -58,6 +59,22 @@ reserve.handle(function (req, res) {
                     m.slots.push(newSlot);
                     return m;
                 }, function() {
+                    var alertTime = new Date(newSlot.start.getTime() - 10 * 60 * 1000);
+                    schedule.scheduleJob(alertTime, function() {
+                        var client = require('twilio')('AC7287cce52cd331042c68dda863805bf6', 'c90be39667768626ae38d19c75728b71');
+                        client.sendMessage({
+                            to: user.number,
+                            from: '+4915735987500',
+                            body: 'Your laundry slot is in 10 min in room ' + available[0].room
+                        }, function(err, responseData) {
+                            if (!err) {
+                                console.log(responseData.from);
+                                console.log(responseData.body);
+                            } else {
+                                console.log(err);
+                            }
+                        });
+                    });
                     res.respondJSON(available[0]);
                 }, function() {
                     res.respondJSON(false, 501);

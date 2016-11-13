@@ -19,6 +19,8 @@
   "homepage": "https://github.com/greece57/washyBackend#readme",
   "dependencies": {
     "aeolus": "^1.1.32",
-    "request": "^2.78.0"
+    "node-schedule": "^1.2.0",
+    "request": "^2.78.0",
+    "twilio": "^2.11.0"
   }
 }
