@@ -20,17 +20,14 @@ function detect(url, callback) {
             url: url
         }
     };
-    console.log(options);
     request(options, function(err, httpRES, body) {
         if (!err || err === null) {
-            console.log(body);
             if (body.length > 0) {
                 callback(body[0].faceId);
             } else {
                 callback(null);
             }
         } else {
-            console.log(err);
             callback(null);
         }
     });
@@ -52,7 +49,6 @@ function identifyAPI(face, groupID, callback) {
     };
     request(options, function(err, httpRES, body) {
         if (!err || err === null) {
-            console.log(body);
             if (body.length > 0) {
                 var candidates = body[0].candidates;
                 callback(candidates);
@@ -68,7 +64,6 @@ function identifyAPI(face, groupID, callback) {
 function getMachine(machines, candidates) {
     for (var i = 0; i < machines.length; i++) {
         var slot = machines[i].slots[0];
-        console.log(slot);
         var withSameID = candidates.filter(function(x) {
             return x.personId === slot.person;
         });
@@ -87,40 +82,19 @@ identify.handle(function (req, res) {
     }
     DB.findAll('machines', { room: roomID }, function(machines) {
         var now = (new Date()).getTime();
-        console.log(new Date());
-        console.log(now);
-        console.log(machines);
         machines = machines.map(function(machine) {
             machine.slots = machine.slots.filter(function(x) {
-                // TODO: Add some more criteria regarding time left in slot
-                // console.log(x);
-                // console.log(new Date(x.start));
-                // console.log(new Date(x.end));
-
-
                 var startDate = new Date(x.start);
                 var endDate = new Date(x.end);
-
-                console.log(startDate);
-                console.log(endDate);
-
                 var startTimeStamp = startDate.getTime();
                 var endTimeStamp = endDate.getTime();
-
                 var didStart = startTimeStamp <= now;
                 var notEnded = endTimeStamp >= now;
-
-                console.log(didStart);
-                console.log(notEnded);
-
                 return (didStart && notEnded);
             });
-            console.log(machine);
             return machine;
         }).filter(function(x) { return x.slots.length > 0; });
         if (machines.length > 0) {
-            console.log("Machines are reserved");
-            console.log(machines);
             detect(url, function(face) {
                 console.log(face);
                 if (face === null) {
@@ -128,24 +102,26 @@ identify.handle(function (req, res) {
                     return;
                 }
                 identifyAPI(face, 'students', function(candidates) {
-                    console.log(candidates);
                     if (candidates === null) {
-                        res.respondPlainText('Internal Error', 500);
+                        res.respondPlainText('no-candidate');
                         return;
                     }
                     var machine = getMachine(machines, candidates);
                     if (machine) {
-                        res.respondJSON(true);
-                        // TODO: Send message through IoT
+                        DB.find('users', { oxfordID: machine.person }, function(user) {
+                            res.respondPlainText(user.name);
+                        }, function() {
+                            res.respondPlainText('user-not-available');
+                        });
                     } else {
-                        res.respondJSON(false);
+                        res.respondPlainText("not-available");
                     }
                 });
             }, function() {
-                res.respondJSON(false);
+                res.respondPlainText("no-face");
             });
         } else {
-            res.respondJSON(false);
+            res.respondPlainText("not-available");
         }
     });
 });
