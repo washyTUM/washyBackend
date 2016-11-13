@@ -24,7 +24,7 @@ function detect(url, callback) {
     request(options, function(err, httpRES, body) {
         if (!err || err === null) {
             console.log(body);
-            callback(body.faceId);
+            callback(body[0].faceId);
         } else {
             console.log(err);
             callback(null);
@@ -64,6 +64,7 @@ function identifyAPI(face, groupID, callback) {
 function getMachine(machines, candidates) {
     for (var i = 0; i < machines.length; i++) {
         var slot = machines[i].slots[0];
+        console.log(slot);
         var withSameID = candidates.filter(function(x) {
             return x.personId === slot.person;
         });

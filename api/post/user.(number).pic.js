@@ -5,7 +5,7 @@ var request = require('request');
 var add = new Method();
 
 function facesURL(groupID, personId) {
-    return "https://api.projectoxford.ai/face/v1.0/persongroups/" + groupID + "/persons/" + personId + "/persitedFaces";
+    return "https://api.projectoxford.ai/face/v1.0/persongroups/" + groupID + "/persons/" + personId + "/persistedFaces";
 }
 
 add.handle(function (req, res) {

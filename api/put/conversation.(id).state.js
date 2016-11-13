@@ -13,9 +13,10 @@ convo.handle(function(req, res) {
         res.respondJSON(item);
     }, function() {
         var item = {
-            userID: req.getParameter('user') || conversation.userID,
-            state: req.getParameter('state') || conversation.state,
-            date: req.getParameter('date') || conversation.date
+            userID: req.getParameter('user'),
+            state: req.getParameter('state'),
+            date: req.getParameter('date'),
+            convoID: req.getParameter('id')
         };
         DB.insert('conversations', item, function() {
             res.respondJSON(item);
@@ -23,20 +24,6 @@ convo.handle(function(req, res) {
             res.respondPlainText("Internal Database Error", 500);
         });
     });
-});
-
-convo.DBWrapper.edit('conversations', function(req) {
-    return {
-        convoID: req.getParameter('id'),
-    };
-}, function(conversation) {
-    conversation.userID = req.getParameter('user') || conversation.userID;
-    conversation.state = req.getParameter('state') || conversation.state;
-    conversation.date = req.getParameter('date') || conversation.date;
-    return conversation;
-}, 200, {}, function() {
-    console.log("Item is not in DB");
-    DB.insert('conversations', {})
 });
 
 module.exports = convo;
