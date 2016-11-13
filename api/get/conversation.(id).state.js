@@ -4,7 +4,6 @@ var DB = require('aeolus').DB;
 var convo = new Method();
 
 convo.DBWrapper.find('conversations', function(req) {
-    console.log(req.getParameter('id'));
     return {
         convoID: req.getParameter('id'),
     };

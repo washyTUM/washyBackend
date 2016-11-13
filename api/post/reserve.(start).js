@@ -32,7 +32,7 @@ reserve.handle(function (req, res) {
     }
     var start = new Date(req.getParameter('start') + " GMT+0100");
     if (!query || !start) {
-        res.responsdPlainText("Get yo shit in order. Missing parameters", 400);
+        res.respondPlainText("Get yo shit in order. Missing parameters", 400);
         return;
     }
     var day = start.toDateString();

@@ -94,6 +94,7 @@ identify.handle(function (req, res) {
             });
             return machine;
         }).filter(function(x) { return x.slots.length > 0; });
+        console.log(machines);
         if (machines.length > 0) {
             detect(url, function(face) {
                 console.log("Face:");
