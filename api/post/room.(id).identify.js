@@ -98,7 +98,7 @@ identify.handle(function (req, res) {
             detect(url, function(face) {
                 console.log(face);
                 if (face === null) {
-                    res.respondJSON(false);
+                    res.respondJSON("no-face");
                     return;
                 }
                 identifyAPI(face, 'students', function(candidates) {
