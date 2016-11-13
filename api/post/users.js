@@ -18,6 +18,7 @@ create.handle(function (req, res) {
     DB.edit('users', { number: number }, function(item) {
         item.facebookID = req.getParameter('facebook') || item.facebookID;
         item.telegramID = req.getParameter('telegram') || item.telegramID;
+        item.emulatorID = req.getParameter('emulator') || item.emulatorID;
         item.name = name || item.name;
         return item;
     }, function(item) {
@@ -47,7 +48,8 @@ create.handle(function (req, res) {
                     balance: 10.0,
                     oxfordID: body.personId,
                     facebookID: req.getParameter('facebook'),
-                    telegramID: req.getParameter('telegram')
+                    telegramID: req.getParameter('telegram'),
+                    emulatorID: req.getParameter('emulator')
                 };
                 DB.insert('users', user, function() {
                     res.respondJSON(user);

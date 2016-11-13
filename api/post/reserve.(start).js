@@ -19,11 +19,14 @@ reserve.handle(function (req, res) {
     var query;
     var facebookID = req.getParameter('facebook');
     var telegramID = req.getParameter('telegram');
+    var emulatorID = req.getParameter('emulator');
     var number = req.getParameter('number');
     if (facebookID) {
         query = { facebookID: facebookID };
     } else if (telegramID) {
         query = { telegramID: telegramID };
+    } else if (emulatorID) {
+        query = { emulatorID: emulatorID };
     } else if (number) {
         query = { number: number };
     }
@@ -51,7 +54,6 @@ reserve.handle(function (req, res) {
                 return machine.slots.length < 1;
             });
             if (available.length > 0) {
-                console.log("Will edit");
                 DB.edit('machines', { _id: available[0]._id }, function(m) {
                     m.slots.push(newSlot);
                     return m;

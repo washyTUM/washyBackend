@@ -6,6 +6,7 @@ var user = new Method();
 user.DBWrapper.find('users', function(req) {
     var facebookID = req.getParameter('facebook');
     var telegramID = req.getParameter('telegram');
+    var emulatorID = req.getParameter('emulator');
     var number = req.getParameter('number');
     if (telegramID) {
         return {
@@ -18,6 +19,10 @@ user.DBWrapper.find('users', function(req) {
     } else if (number) {
         return {
             number: number
+        };
+    } else if (emulatorID) {
+        return {
+            emulatorID: emulatorID
         };
     } else {
         return {
