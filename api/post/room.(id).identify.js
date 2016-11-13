@@ -4,12 +4,13 @@ var request = require('request');
 
 var identify = new Method();
 
-var facesDetectURL = "https://api.projectoxford.ai/face/v1.0/detect";
+var facesDetectURL = "https://api.projectoxford.ai/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false";
 var facesIdentifyURL = "https://api.projectoxford.ai/face/v1.0/identify";
 
 function detect(url, callback) {
     var options = {
         url: facesDetectURL,
+        method: 'POST',
         headers: {
             "Content-Type": "application/json",
             "Ocp-Apim-Subscription-Key": "e16d3ed01c1243099ed866638c17d79d"
@@ -31,9 +32,10 @@ function detect(url, callback) {
     });
 }
 
-function identify(face, groupID, callback) {
+function identifyAPI(face, groupID, callback) {
     var options = {
         url: facesIdentifyURL,
+        method: 'POST',
         headers: {
             "Content-Type": "application/json",
             "Ocp-Apim-Subscription-Key": "e16d3ed01c1243099ed866638c17d79d"
@@ -46,7 +48,8 @@ function identify(face, groupID, callback) {
     };
     request(options, function(err, httpRES, body) {
         if (!err || err === null) {
-            if (body.lenght > 0) {
+            console.log(body);
+            if (body.length > 0) {
                 var candidates = body[0].candidates;
                 callback(candidates);
             } else {
@@ -113,10 +116,18 @@ identify.handle(function (req, res) {
         if (machines.length > 0) {
             console.log("Machines are reserved");
             console.log(machines);
-            detect(function(face) {
+            detect(url, function(face) {
                 console.log(face);
-                identify(face, 'students', function(candidates) {
+                if (face === null) {
+                    res.respondPlainText("Internal Error", 500);
+                    return;
+                }
+                identifyAPI(face, 'students', function(candidates) {
                     console.log(candidates);
+                    if (candidates === null) {
+                        res.respondPlainText('Internal Error', 500);
+                        return;
+                    }
                     var machine = getMachine(machines, candidates);
                     if (machine) {
                         res.respondJSON(true);

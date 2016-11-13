@@ -19,6 +19,7 @@ add.handle(function (req, res) {
         var id = user.oxfordID;
         var options = {
             url: facesURL('students', id),
+            method: 'POST',
             headers: {
                 "Content-Type": "application/json",
                 "Ocp-Apim-Subscription-Key": "e16d3ed01c1243099ed866638c17d79d"
@@ -28,8 +29,10 @@ add.handle(function (req, res) {
                 url: url
             }
         };
+        console.log(options);
         request(options, function(err, httpRES, body) {
             if (!err || err === null) {
+                console.log(body);
                 res.respondPlainText("Succesfully added pic. Nice...");
             } else {
                 res.respondPlainText(err.toString(), 501);
