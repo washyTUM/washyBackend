@@ -44,6 +44,7 @@ add.handle(function (req, res) {
         res.respondPlainText("Get yo shit in order. Missing parameters", 400);
         return;
     }
+    console.log("URL: " + url);
     DB.find('users', query, function(user) {
         var id = user.oxfordID;
         var options = {

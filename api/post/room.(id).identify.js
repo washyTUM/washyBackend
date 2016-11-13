@@ -96,17 +96,21 @@ identify.handle(function (req, res) {
         }).filter(function(x) { return x.slots.length > 0; });
         if (machines.length > 0) {
             detect(url, function(face) {
+                console.log("Face:");
                 console.log(face);
                 if (face === null) {
                     res.respondJSON("no-face");
                     return;
                 }
                 identifyAPI(face, 'students', function(candidates) {
+                    console.log("candidates");
+                    console.log(candidates);
                     if (candidates === null) {
                         res.respondPlainText('no-candidate');
                         return;
                     }
                     var machine = getMachine(machines, candidates);
+                    console.log(machine);
                     if (machine) {
                         DB.find('users', { oxfordID: machine.person }, function(user) {
                             res.respondPlainText(user.name);
