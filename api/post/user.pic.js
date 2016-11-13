@@ -25,6 +25,7 @@ function doTrain() {
 }
 
 add.handle(function (req, res) {
+    console.log("PICCCCSSSSS");
     var query;
     var facebookID = req.getParameter('facebook');
     var telegramID = req.getParameter('telegram');
