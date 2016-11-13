@@ -25,13 +25,26 @@ function doTrain() {
 }
 
 add.handle(function (req, res) {
+    var query;
+    var facebookID = req.getParameter('facebook');
+    var telegramID = req.getParameter('telegram');
+    var emulatorID = req.getParameter('emulator');
     var number = req.getParameter('number');
+    if (facebookID) {
+        query = { facebookID: facebookID };
+    } else if (telegramID) {
+        query = { telegramID: telegramID };
+    } else if (emulatorID) {
+        query = { emulatorID: emulatorID };
+    } else if (number) {
+        query = { number: number };
+    }
     var url = req.getParameter('url');
-    if (!number || !url) {
+    if (!query || !url) {
         res.respondPlainText("Get yo shit in order. Missing parameters", 400);
         return;
     }
-    DB.find('users', { number: number }, function(user) {
+    DB.find('users', query, function(user) {
         var id = user.oxfordID;
         var options = {
             url: facesURL('students', id),
