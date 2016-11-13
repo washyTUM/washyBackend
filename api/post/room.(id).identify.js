@@ -24,7 +24,11 @@ function detect(url, callback) {
     request(options, function(err, httpRES, body) {
         if (!err || err === null) {
             console.log(body);
-            callback(body[0].faceId);
+            if (body.length > 0) {
+                callback(body[0].faceId);
+            } else {
+                callback(null);
+            }
         } else {
             console.log(err);
             callback(null);
